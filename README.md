@@ -33,3 +33,8 @@ And what we expect you'll learn about us is:
    This means use whatever tools, gems, etc. you need to get the job done. We also use github to collborate
    so use it in which ever way you like.
 5. Have fun!
+
+*Note*: The git branch [basic-setup][1] contains a basic Ruby project setup
+that you can use if you like.
+
+[1]:https://github.com/Talkdesk/talkdesk_problems/tree/basic-setup
