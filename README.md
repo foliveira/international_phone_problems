@@ -29,12 +29,23 @@ And what we expect you'll learn about us is:
 1. Read the [Wiki](https://github.com/Talkdesk/talkdesk_problems/wiki) and choose a problem to solve
 2. Clone this repository
 3. Open an Issue in your new repo with the problem you've chosen (can be used to discuss, ask questions, etc)
-4. Solve the problem any way you like, but please follow our Development practices.
+4. Solve the problem any way you like, but take into account our Development practices.
    This means use whatever tools, gems, etc. you need to get the job done. We also use github to collborate
    so use it in which ever way you like.
 5. Have fun!
 
-*Note*: The git branch [basic-setup][1] contains a basic Ruby project setup
-that you can use if you like.
+### During Development
+
+As is mentioned in the Development Practices, you should be doing the development of this in a topic branch.
+Once you have something in your branch, you can open a Pull Request (to your own master branch) any time you
+like. You can use this pull request to disucss something code specific, or if you'd like some feedback on
+your code.
+
+If you have any problems or questions, just open an issue in your repository.
+
+Once you have something more substatial to show, make sure you have a pull request open so that a code review
+can be performed within it.
+
+*Note*: The git branch [basic-setup][1] contains a basic Ruby project setup that you can use if you like.
 
 [1]:https://github.com/Talkdesk/talkdesk_problems/tree/basic-setup
