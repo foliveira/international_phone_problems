@@ -32,7 +32,9 @@ And what we expect you'll learn about us is:
 4. Solve the problem any way you like, but take into account our Development practices.
    This means use whatever tools, gems, etc. you need to get the job done. We also use github to collborate
    so use it in which ever way you like.
-5. Have fun!
+5. Update your repository's README.md file so that it can give a small overview of how you solved the problem you
+   chose. This will also help us navigate the code while reviewing :)
+6. Have fun!
 
 ### During Development
 
