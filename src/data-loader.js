@@ -22,7 +22,7 @@ DataLoader.prototype.init = function() {
 	var csv = args[0]
 	if(undefined === typeof csv) { throw new Error('No valid CSV value') }
 
-	if(lstatSync(csv).isFile() === true) {
+	if(fs.lstatSync(csv).isFile() === true) {
 
 	}
 }
