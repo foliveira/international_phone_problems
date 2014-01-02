@@ -5,26 +5,35 @@ var DataLoader = require('../src/data-loader')
 	,Classifier = require('../src/classifier')
 
 vows.describe('DataLoader').addBatch({
-    'when creating a DataLoader': {
+    'creating a DataLoader': {
         topic: function() { return new DataLoader() }
+        ,'returns an object': {
+        	topic: function(loader) { return loader }
+        	,'which responds to init': function(loader) {
+        		expect(loader).to.respondTo('init')
+        	}
+        	,'which can create classifiers': function(loader) {
+        		expect(loader).to.respondTo('createClassifier')
+        	}
+        	,'where calling init()': {
+        		topic: function(loader) { return loader }
+        		,'expects a CSV value': function(loader) {
+	        		var initWithCSV = function() { loader.init('foo,bar,baz') }
+	        		var initWithoutCSV = function() { loader.init() }
+	        		var otherInitWithoutCSV = function() { loader.init() }
 
-        ,'it should be able to be inited and create classifiers': function (loader) {
-        	expect(loader).to.respondTo('init')
-        	expect(loader).to.respondTo('createClassifier')
-        }
-        ,'init() expect a csv value': function(loader) {
-        	var initWithCSV = function() { loader.init('foo,bar,baz') }
-        	var initWithoutCSV = function() { loader.init() }
-
-        	expect(initWithCSV).to.not.throw(Error)
-        	expect(initWithoutCSV).to.throw(Error)
-        }
-        ,'a classifier should be created': function() {
-        	var classifier = loader.createClassifier()
-
-        	expect(classifier).to.be.an.instanceOf(Classifier)
-        	expect(classifier).to.respondTo('classify')
-        	
-        }
+	        		expect(initWithCSV).to.not.throw(Error)
+	        		expect(initWithoutCSV).to.throw(Error)
+	        		expect(initWithoutCSV).to.throw(Error)
+        		}
+        		,'makes createClassifier()': {
+        			topic: function(loader) { return loader.createClassifier() }
+        			,'return a valid classifier': function(classifier) {
+	        			expect(classifier).to.be.an.instanceOf(Classifier)
+			        	expect(classifier).to.respondTo('classify')	
+        			}
+        		}
+			}
+		}
     }
 }).export(module)
