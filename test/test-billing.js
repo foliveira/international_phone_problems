@@ -23,8 +23,8 @@ vows.describe('Billing').addBatch({
 }).addBatch({
     'a bill': {
         topic: function() { return new Billing() }
-        ,'for when a 57 seconds call ends and': {
-            'is answered in the browser by': {
+        ,'for when a 57 seconds call ends': {
+            'that was answered in the browser by': {
                 'a normal talkdesk number': {
                     topic: function(billing) {
                         var record =  {
@@ -69,17 +69,15 @@ vows.describe('Billing').addBatch({
                                                     ,record.forwarded_phone_number)  
                     }
                     ,'should be 0.12 cents': function(bill) {
-                        console.dir(bill)
                         expect(bill).to.equal(1 *
                                                 (processor.UK_TOLL_FREE_NUMBER_COST 
                                                 + processor.BROWSER_ANSWER_COST
                                                 + processor.PROFIT_MARGIN))
                     }
-                    }
                 }
                 ,'a US toll free talkdesk number': {
-                    topic: function(record) { 
-                        return {
+                    topic: function(billing) { 
+                        var record =  {
                             "event":"call_finished",
                             "type":"in",
                             "duration":"57",
@@ -103,34 +101,35 @@ vows.describe('Billing').addBatch({
                     }
                 }                
             }
-        }
-        ,'it was forwarded': {
-            'to a Malawi number': {
-                topic: function(record) { 
-                    return {
-                        "event":"call_finished",
-                        "type":"in",
-                        "duration":"57",
-                        "call_id":"9d036a18-0986-11e2-b2c6-3d435d81b7fd",
-                        "talkdesk_phone_number":"+18885550609",
-                        "customer_phone_number":"+351961918192",
-                        "forwarded_phone_number":"+26581232",
-                        "timestamp":"2012-09-28T16:09:07Z"
-                    }
+            ,'that was forwarded': {
+                'to a Malawi number': {
+                    topic: function(billing) { 
+                        var record =  {
+                            "event":"call_finished",
+                            "type":"in",
+                            "duration":"57",
+                            "call_id":"9d036a18-0986-11e2-b2c6-3d435d81b7fd",
+                            "talkdesk_phone_number":"+18885550609",
+                            "customer_phone_number":"+351961918192",
+                            "forwarded_phone_number":"+26581232",
+                            "timestamp":"2012-09-28T16:09:07Z"
+                        }
 
-                    return Billing.calculateDuration(record.duration)
-                            * billing.calculate(record.talkdesk_phone_number
-                                                ,record.customer_phone_number
-                                                ,record.forwarded_phone_number)
-                }
-                ,'should be 0.303 cents': function(bill) {
-                    expect(bill).to.equal(1 *
-                                            (processor.NORMAL_NUMBER_COST  /*Normal*/ 
-                                            + 0.243                      /*Malawi*/ 
-                                            + processor.PROFIT_MARGIN)     /*Minutes*/)
+                        return Billing.calculateDuration(record.duration)
+                                * billing.calculate(record.talkdesk_phone_number
+                                                    ,record.customer_phone_number
+                                                    ,record.forwarded_phone_number)
+                    }
+                    ,'should be 0.303 cents': function(bill) {
+                        expect(bill).to.equal(1 *
+                                                (processor.NORMAL_NUMBER_COST
+                                                + 0.243 
+                                                + processor.PROFIT_MARGIN))
+                    }
                 }
             }
         }
+    }
 }).addBatch({
     'a call of 42 seconds': {
         topic: function() { return Billing.calculateDuration(42) }
