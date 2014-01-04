@@ -1,0 +1,51 @@
+'use strict'
+/** 
+ *
+ * @module call-classifier
+ */
+
+var log = require('npmlog')
+
+/** 
+ * @constructor
+ */
+function Classifier() {
+	
+}
+
+/**
+ * @param {Classifier} classifier 
+ */
+Classifier.prototype.init = function() {
+
+}
+
+/**
+ * @param {string} telephone_num 
+ */
+Classifier.prototype.classify = function classify(telephone_num) {
+	var first_char = telephone_num.chartAt(0)
+
+	if(first_char === '0' || first_char === '+')
+		return classify(telephone_num.slice(1))
+
+	return process_number(telephone_num, this.prices_tree)
+
+	var process_number = function process(num, h) {
+		var first_num = num.charAt(0)
+		var following_nums = num.slice(1)
+		var first_num_hash_hit = h[first_num]
+		var following_nums_lookahead = following_nums.charAt(0)
+
+		if(!first_num_hash_hit.hasOwnProperty(following_nums_lookahead)) 
+		return null
+
+		if(following_nums.length === 0) 
+		return first_num_hash_hit.value
+
+		if(h.hasOwnProperty(first_num)) 
+		return process(following_nums, first_num_hash_hit) || first_num_hash_hit[following_nums_lookahead].value
+	}
+}
+
+module.exports = Classifier

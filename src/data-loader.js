@@ -7,6 +7,9 @@ var csv = require('csv')
 	,fs = require('fs')
 	,events = require('events')
 	,util = require('util')
+	,log = require('npmlog')
+
+var Classifier = require('./classifier')
 
 /** 
  * @constructor
@@ -47,7 +50,7 @@ DataLoader.prototype.init = function() {
  *	@returns {Classifier} a classifier based on the loaded data
  */
 DataLoader.prototype.createClassifier = function() {
-
+	return new Classifier()
 }
 
 module.exports = DataLoader
