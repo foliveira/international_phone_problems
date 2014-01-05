@@ -18,6 +18,7 @@ function Classifier(tree) {
  */
 Classifier.prototype.classify = function classify(telephone_num) {
 	var self = this
+	
 	var process_number = function process(num, h) {
 		var first_num = num.charAt(0)
 		var following_nums = num.slice(1)

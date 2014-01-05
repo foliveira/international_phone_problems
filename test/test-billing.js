@@ -4,11 +4,9 @@ var vows = require('vows')
 var Billing = require('../src/billing-processor')
 var DataLoader = require('../src/data-loader')
 
-var processor = new Billing()
-
 vows.describe('Billing').addBatch({
     'creating a Billing Processor': {
-        topic: function() { return new Billing() }
+        topic: function() { new Billing() }
         ,'returns an object': {
             topic: function(processor) { return processor }
             ,'that responds to calculate()': function(processor) {
@@ -22,7 +20,12 @@ vows.describe('Billing').addBatch({
     }
 }).addBatch({
     'a bill': {
-        topic: function() { return new Billing() }
+        topic: function() { 
+            var dl = new DataLoader('Malawi,0.243,265 2653 2654 2655 2658 2659,')
+            var b = new Billing()
+            b.init(dl.createClassifier())
+            return b
+        }
         ,'for when a 57 seconds call ends': {
             'that was answered in the browser by': {
                 'a normal talkdesk number': {

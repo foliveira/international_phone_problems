@@ -36,20 +36,24 @@ function DataLoader() {
 		return procPrfxs(rest_of_prefix, value, tree[first_num])
 	}
 
-	this.processData = function(data) {
-		var country = data[0]
-		var price = parseFloat(data[1])
-		var prefixs = data[2].split(' ')
+	this.processData = function(values) {
+		for (var i = values.length - 1; i >= 0; i--) {
+			var data = values[i]
 
-		if(country === 'Name') return //Ignore the first row of data
+			var country = data[0]
+			var price = parseFloat(data[1])
+			var prefixs = data[2].split(' ')
 
-		var value_to_insert = { c: country, p: price}
+			if(country === 'Name') continue //Ignore the CSV header
 
-		for (var i = prefixs.length - 1; i >= 0; i--) {
-			var pfx = prefixs[i]
+			var value_to_insert = { c: country, p: price}
 
-			processPrefixs(pfx, value_to_insert)
+			for (var j = prefixs.length - 1; j >= 0; j--) {
+				processPrefixs(prefixs[j], value_to_insert)
+			}
 		}
+
+		self.emit('ready')
 	}
 }
 
@@ -81,20 +85,17 @@ DataLoader.prototype.init = function() {
 		if(data_value.constructor === Array) {
 			log.info('DataLoader', 'Got an array of values')
 			raw_data = csv().from.array(data_value)
-							.transform(self.processData)
-							.on('end', function() { self.emit('end') })
+							.to.array(self.processData)
 		
 		} else if(data_value.constructor === fs.ReadStream) {
 			log.info('DataLoader', 'Got a file')
 			raw_data = csv().from.stream(data_value)
-							.transform(self.processData)
-							.on('end', function() { self.emit('end') })
+							.to.array(self.processData)
 		
 		} else if(data_value.constructor === String) {
 			log.info('DataLoader', 'Got a string with comma separated values')
 			raw_data = csv().from.string(data_value)
-							.transform(self.processData)
-							.on('end', function() { self.emit('end') })
+							.to.array(self.processData)
 		
 		} else {
 			throw new Error('The type of data provided is not valid')
