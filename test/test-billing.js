@@ -2,7 +2,7 @@ var vows = require('vows')
     ,expect = require('chai').expect
 
 var Billing = require('../src/billing-processor')
-var Classifier = require('../src/classifier')
+var DataLoader = require('../src/data-loader')
 
 var processor = new Billing()
 

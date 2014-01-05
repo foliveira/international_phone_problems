@@ -1,6 +1,6 @@
 {
   "name": "call-billing",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "A solution for the Call Billing problem from Talkdesk",
   "main": "index.js",
   "scripts": {

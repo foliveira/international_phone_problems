@@ -54,7 +54,7 @@ BillingProcessor.prototype.calculate = function(talkdesk_num, external_num, fwd_
 	}
 
 	var talkdesk_num_cost = calculateTalkdeskCost(talkdesk_num)
-	var answering_cost = !fwd_num ? this.BROWSER_ANSWER_COST : 0//classifier.classify(fwd_num)
+	var answering_cost = !fwd_num ? this.BROWSER_ANSWER_COST : self.classifier.classify(fwd_num).p
 
 	return this.PROFIT_MARGIN + talkdesk_num_cost + answering_cost
 }

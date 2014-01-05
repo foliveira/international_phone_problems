@@ -1,0 +1,28 @@
+var path = __dirname + '/..'
+
+var log = require('npmlog')
+	,fs = require('fs')
+
+var DataLoader = require(path + '/src/data-loader')
+var Billing = require(path + '/src/billing-processor')
+
+var loader = new DataLoader()
+log.info('Biller', 'Created DataLoader')
+
+var billing = new Billing()
+log.info('Biller', 'Created BillingProcessor')
+
+loader.init(fs.createReadStream(path + '/data/twilio_prices.csv'))
+log.info('Biller', 'Loader inited with CSV file')
+
+loader.on('end', function() {
+	log.info('Biller', 'Finished loading price values')
+	
+	var classifier = loader.createClassifier()
+	log.info('Biller', 'Created a classifier')
+	
+	billing.init(classifier)
+	log.info('Biller', 'Inited the Billing Processor with the classifier')
+	
+	console.log(billing.calculate("+351933113200" ,"+351961918192", "+351933113288") * Billing.calculateDuration("412"))
+})
