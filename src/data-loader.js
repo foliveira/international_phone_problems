@@ -2,7 +2,6 @@
 /** 
  * @module data-loader
  */
-
 var csv = require('csv')
 	,fs = require('fs')
 	,log = require('npmlog')
@@ -42,7 +41,7 @@ function DataLoader() {
 		var price = parseFloat(data[1])
 		var prefixs = data[2].split(' ')
 
-		if(country === 'Name') return
+		if(country === 'Name') return //Ignore the first row of data
 
 		var value_to_insert = { c: country, p: price}
 
@@ -57,8 +56,9 @@ function DataLoader() {
 util.inherits(DataLoader, events.EventEmitter)
 
 /**
- * @param {string} csv Comma Separated Value or a path to a file
- * @param {Function} cb Callback to be executed when the CSV is processed
+ *
+ * @param {Array|String|ReadStream} data_value 
+ *
  */
 DataLoader.prototype.init = function() {
 	var self = this
