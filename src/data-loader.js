@@ -18,6 +18,7 @@ var Classifier = require('./classifier')
  */
 function DataLoader() {
 	var self = this
+	
 	events.EventEmitter.call(this) //Call the super() constructor
 
 	/** The index-tree structure */

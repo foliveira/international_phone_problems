@@ -8,6 +8,9 @@
 
 var log = require('npmlog')
 
+var UK_TOLL_FREE_NUMBERS = ['+44800']
+var US_TOLL_FREE_NUMBERS = ['+1888']
+
 /** 
  * @constructor
  */
@@ -48,8 +51,13 @@ BillingProcessor.prototype.init = function(classifier) {
 BillingProcessor.prototype.calculate = function(talkdesk_num, external_num, fwd_num) {
 	var self = this
 	var calculateTalkdeskCost = function(number) {
-		if(number.substring(0, 5) === '+1888') return self.US_TOLL_FREE_NUMBER_COST
-		else if (number.substring(0, 6) === '+44800') return self.UK_TOLL_FREE_NUMBER_COST
+		//if the first five digits of the number are contained in the array
+		if(~US_TOLL_FREE_NUMBERS.indexOf(number.substring(0, 5))) {
+			return self.US_TOLL_FREE_NUMBER_COST
+		}
+		else if (~UK_TOLL_FREE_NUMBERS.indexOf(number.substring(0, 6))) {
+			return self.UK_TOLL_FREE_NUMBER_COST
+		}
 
 		return self.NORMAL_NUMBER_COST
 	}
