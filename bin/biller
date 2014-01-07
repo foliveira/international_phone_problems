@@ -2,7 +2,9 @@ var path = __dirname + '/..'
 
 var log = require('npmlog')
 	,fs = require('fs')
+	,readline = require('readline')
 
+/*
 var DataLoader = require(path + '/src/data-loader')
 var Billing = require(path + '/src/billing-processor')
 
@@ -24,4 +26,4 @@ loader.on('ready', function() {
 	
 	console.log(billing.calculate("+351933113200" ,"+351961918192", "+351933113288") * Billing.calculateDuration("412"))
 })
-
+*/
