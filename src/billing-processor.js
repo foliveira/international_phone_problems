@@ -28,6 +28,7 @@ function BillingProcessor() {
 }
 
 /**
+ * Inits the processor with a classfier, built and populated from a DataSource
  * @param {Classifier} classifier 
  */
 BillingProcessor.prototype.init = function(classifier) {

@@ -1,5 +1,8 @@
 'use strict'
 /** 
+ * A module that receives a CSV data-set and converts it to a 
+ * index-tree
+ *
  * @module data-loader
  */
 var csv = require('csv')
@@ -15,10 +18,17 @@ var Classifier = require('./classifier')
  */
 function DataLoader() {
 	var self = this
-	events.EventEmitter.call(this)
+	events.EventEmitter.call(this) //Call the super() constructor
 
+	/** The index-tree structure */
 	this.trie = {}
 
+	/**
+	 * A recursive function that creates a prefix entry on the tree.
+	 * This entry is an object that is created for each of the number
+	 * digits and in the last object, corresponding to the last digit
+	 * of the prefix, there's a value object with the value and country
+	 */
 	var processPrefixs = function procPrfxs(prefix, value, tree) {
 		if(tree === undefined)
 			tree = self.trie
@@ -36,6 +46,11 @@ function DataLoader() {
 		return procPrfxs(rest_of_prefix, value, tree[first_num])
 	}
 
+	/**
+	 * Receives an array of values and processes them into a tree
+	 * of objects containing the country name and price.
+	 * Ignores the header row.
+	 */
 	this.processData = function(values) {
 		for (var i = values.length - 1; i >= 0; i--) {
 			var data = values[i]
@@ -60,8 +75,11 @@ function DataLoader() {
 util.inherits(DataLoader, events.EventEmitter)
 
 /**
+ * Receives either an array, string or ReadStream containing
+ * a list of CSV values, converts them to an array and feeds them
+ * to a processor 
  *
- * @param {Array|String|ReadStream} data_value 
+ * @param {Array|String|ReadStream} data_value A set of CSV data to be loaded
  *
  */
 DataLoader.prototype.init = function() {

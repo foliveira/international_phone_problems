@@ -1,5 +1,7 @@
 'use strict'
 /** 
+ * This module classifies numbers by country. This is done by tranversing
+ * an index-tree.
  *
  * @module call-classifier
  */
@@ -14,6 +16,13 @@ function Classifier(tree) {
 }
 
 /**
+ * The method classifies a given number by outputing it's price.
+ * The algorithm iterates the index tree by getting each of the number
+ *		digits and using them on a top-down iteration until the process
+ *		hits a final leaf (one that doesn't contain the next digit of the 
+ *		number as a child). In the end it returns the value object of the
+ *		leaf
+ *
  * @param {string} telephone_num 
  */
 Classifier.prototype.classify = function classify(telephone_num) {
