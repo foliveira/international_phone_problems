@@ -1,15 +1,15 @@
 var vows = require('vows')
     ,expect = require('chai').expect
+    ,events = require('events')
 
 var Billing = require('../src/billing-processor')
 var DataLoader = require('../src/data-loader')
 
 vows.describe('Billing').addBatch({
     'creating a Billing Processor': {
-        topic: function() { new Billing() }
+        topic: function() { return new Billing() }
         ,'returns an object': {
-            topic: function(processor) { return processor }
-            ,'that responds to calculate()': function(processor) {
+            'that responds to calculate()': function(processor) {
                 expect(processor).to.respondTo('calculate')
             }
             ,'that responds to calculateDuration() [static method]': function(processor) {
@@ -21,10 +21,18 @@ vows.describe('Billing').addBatch({
 }).addBatch({
     'a bill': {
         topic: function() { 
-            var dl = new DataLoader('Malawi,0.243,265 2653 2654 2655 2658 2659,')
+            var promise = new events.EventEmitter()
+            var dl = new DataLoader()
             var b = new Billing()
-            b.init(dl.createClassifier())
-            return b
+
+            dl.on('ready', function() {
+                b.init(dl.createClassifier())
+                promise.emit('success', b)
+            })
+
+            dl.init('Malawi,0.243,265 2653 2654 2655 2658 2659,')
+            
+            return promise
         }
         ,'for when a 57 seconds call ends': {
             'that was answered in the browser by': {
@@ -47,10 +55,7 @@ vows.describe('Billing').addBatch({
                                                 ,record.forwarded_phone_number)        
                     }
                     ,'should be 0.07 cents': function(bill) {
-                        expect(bill).to.equal(1 *
-                                                (processor.NORMAL_NUMBER_COST
-                                                + processor.BROWSER_ANSWER_COST 
-                                                + processor.PROFIT_MARGIN))
+                        expect(bill).to.equal(1 * (0.01 + 0.01 + 0.05))
                     }
                 }
                 ,'a UK toll free talkdesk number': {
@@ -72,10 +77,7 @@ vows.describe('Billing').addBatch({
                                                     ,record.forwarded_phone_number)  
                     }
                     ,'should be 0.12 cents': function(bill) {
-                        expect(bill).to.equal(1 *
-                                                (processor.UK_TOLL_FREE_NUMBER_COST 
-                                                + processor.BROWSER_ANSWER_COST
-                                                + processor.PROFIT_MARGIN))
+                        expect(bill).to.equal(1 * (0.06 + 0.01 + 0.05))
                     }
                 }
                 ,'a US toll free talkdesk number': {
@@ -97,10 +99,7 @@ vows.describe('Billing').addBatch({
                                                     ,record.forwarded_phone_number)
                     }
                     ,'should be 0.09 cents': function(bill) {
-                        expect(bill).to.equal(1 *
-                                                (processor.US_TOLL_FREE_NUMBER_COST 
-                                                + processor.BROWSER_ANSWER_COST 
-                                                + processor.PROFIT_MARGIN))
+                        expect(bill).to.equal(1 * (0.03 + 0.01 + 0.05))
                     }
                 }                
             }
@@ -112,7 +111,7 @@ vows.describe('Billing').addBatch({
                             "type":"in",
                             "duration":"57",
                             "call_id":"9d036a18-0986-11e2-b2c6-3d435d81b7fd",
-                            "talkdesk_phone_number":"+18885550609",
+                            "talkdesk_phone_number":"+15550609",
                             "customer_phone_number":"+351961918192",
                             "forwarded_phone_number":"+26581232",
                             "timestamp":"2012-09-28T16:09:07Z"
@@ -124,10 +123,7 @@ vows.describe('Billing').addBatch({
                                                     ,record.forwarded_phone_number)
                     }
                     ,'should be 0.303 cents': function(bill) {
-                        expect(bill).to.equal(1 *
-                                                (processor.NORMAL_NUMBER_COST
-                                                + 0.243 
-                                                + processor.PROFIT_MARGIN))
+                        expect(bill).to.equal(1 * (0.01 + 0.243 + 0.05))
                     }
                 }
             }
