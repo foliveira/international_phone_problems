@@ -1,8 +1,14 @@
 var vows = require('vows')
 	,expect = require('chai').expect
 
+{
+    var log = require('npmlog')
+    log.level = 'error'
+}
+
 var DataLoader = require('../src/data-loader')
 	,Classifier = require('../src/classifier')
+
 
 vows.describe('DataLoader').addBatch({
     'creating a DataLoader': {

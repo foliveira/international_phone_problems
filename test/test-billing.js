@@ -2,6 +2,11 @@ var vows = require('vows')
     ,expect = require('chai').expect
     ,events = require('events')
 
+{
+    var log = require('npmlog')
+    log.level = 'error'
+}
+
 var Billing = require('../src/billing-processor')
 var DataLoader = require('../src/data-loader')
 
