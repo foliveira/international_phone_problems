@@ -4,7 +4,8 @@
   "description": "A solution for the Call Billing problem from Talkdesk",
   "main": "index.js",
   "scripts": {
-    "test": "vows --spec test/*"
+    "test": "vows --spec test/*",
+    "start": "node bin/biller"
   },
   "repository": {
     "type": "git",
