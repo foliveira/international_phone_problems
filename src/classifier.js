@@ -28,10 +28,10 @@ function Classifier(tree) {
 Classifier.prototype.classify = function classify(telephone_num) {
 	var self = this
 	
-	var process_number = function process(num, h) {
+	var process_number = function process(num, trie) {
 		var first_num = num.charAt(0)
 		var following_nums = num.slice(1)
-		var first_num_hash_hit = h[first_num]
+		var first_num_hash_hit = trie[first_num]
 		var following_nums_lookahead = following_nums.charAt(0)
 
 		if(!first_num_hash_hit || !first_num_hash_hit.hasOwnProperty(following_nums_lookahead)) 
@@ -40,8 +40,8 @@ Classifier.prototype.classify = function classify(telephone_num) {
 		if(following_nums.length === 0) 
 			return first_num_hash_hit.v
 
-		if(h.hasOwnProperty(first_num)) 
-			return process(following_nums, first_num_hash_hit) || first_num_hash_hit[following_nums_lookahead].v
+		if(trie.hasOwnProperty(first_num)) 
+			return process(following_nums, first_num_hash_hit) || first_num_hash_hit[following_nums_lookahead].v || trie.v
 	}
 
 	var first_char = telephone_num.charAt(0)
