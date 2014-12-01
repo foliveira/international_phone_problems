@@ -1,0 +1,101 @@
+var path = __dirname + '/..'
+
+var log = require('npmlog')
+	,fs = require('fs')
+	,readline = require('readline')
+	,events = require('events')
+
+/** Stuff needed */
+log.level = 'verbose'
+log.addLevel('cmd', 9000, {fg: 'magenta', bold: true})
+var eventer = new events.EventEmitter()
+
+/** Setup the billing interfaces */
+var DataLoader = require(path + '/src/data-loader')
+var Billing = require(path + '/src/billing-processor')
+
+var billing = new Billing()
+log.info('Biller', 'Created BillingProcessor')
+
+var loader = new DataLoader()
+log.info('Biller', 'DataLoader created')
+
+loader.init(fs.createReadStream(path + '/data/twilio_prices.csv'))
+
+loader.on('ready', function() { 
+	log.info('Biller', 'Loader inited with CSV file')
+	var classifier = loader.createClassifier()
+	log.info('Biller', 'Created a classifier')
+
+	billing.init(classifier) 
+	log.info('Biller', 'Inited the Billing Processor with the classifier')
+
+	eventer.emit('start')
+})
+
+/** The main application */
+eventer.on('start', function() {
+	var reader = readline.createInterface(
+		{ 
+			input: process.stdin
+			,output: process.stdout
+			,terminal: false
+		}
+	)
+	
+	var pls_insert_data = function() {
+		log.cmd('\nInsert a call as a comma-separated tuple of "' + 
+			'duration,' +
+			'talkdesk_phone_number,' +
+			'customer_phone_number,'+
+			'forwarded_phone_number' +
+			'" - the forwarded_phone_number can be omitted:')
+	}
+
+	/* Hey dear user */ pls_insert_data()
+
+	reader.on('line', function(cmd) {
+		if(cmd === 'exit') { 
+			log.info('Biller', 'Will exit now!')
+			process.exit(1) 
+		}
+
+		var data = cmd.split(',')
+		var duration = data[0] 	|| 0
+		var td_num = data[1] 	|| ''
+		var cust_num = data[2]	|| ''
+		var fwd_num = data[3]	|| ''
+
+		var bill = Billing.calculateDuration(duration) 
+				* billing.calculate(td_num.trim()
+									,cust_num.trim()
+									,fwd_num.trim())
+
+		log.cmd('\nThe bill for this call was: ' + bill + '€')
+
+		pls_insert_data() /* again, really please */
+	})	
+})
+
+/*
+
+
+var loader = new DataLoader()
+log.info('Biller', 'Created DataLoader')
+
+var billing = new Billing()
+log.info('Biller', 'Created BillingProcessor')
+
+loader.init(fs.createReadStream(path + '/data/twilio_prices.csv'))
+log.info('Biller', 'Loader inited with CSV file')
+
+loader.on('ready', function() { 
+	var classifier = loader.createClassifier()
+	log.info('Biller', 'Created a classifier')
+
+	billing.init(classifier) 
+	log.info('Biller', 'Inited the Billing Processor with the classifier')
+	
+	console.log(billing.calculate("+351933113200" ,"+351961918192", "+351933113288") * Billing.calculateDuration("412"))
+})
+*/
